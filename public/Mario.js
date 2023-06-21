@@ -71,14 +71,17 @@ class Mario extends Phaser.GameObjects.Sprite {
       });
 
       scene.anims.create({
-        key: "dead",
-        frames: scene.anims.generateFrameNumbers("goomba", {
+        key: "mario-flipped",
+        frames: scene.anims.generateFrameNumbers("mario", {
             start: 12,
             end:12
         }),
         frameRate: 10,
         repeat: -1
       });
+
+
+     
   }
 
   update(){
@@ -110,7 +113,7 @@ class Mario extends Phaser.GameObjects.Sprite {
                 }
             }
         }else{
-            this.play("dead");
+            this.play("mario-flipped");
         }
 
         // //adding jumping frames

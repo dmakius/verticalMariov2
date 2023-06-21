@@ -1,14 +1,20 @@
 class Goomba extends Phaser.GameObjects.Sprite {
-    constructor(scene,x,y){
-      super(scene, x, y, "goomba");
+    constructor(scene,x,y,ran){
+      super(scene, x, y,"goomba");
       scene.add.existing(this);
       scene.physics.add.existing(this);
       scene.physics.world.enableBody(this);
       this.setInteractive();
       this.body.gravity.y = 700;
       this.dead = false;
-
-      this.body.velocity.x =  50;
+      this.flipped = false;
+      // this.body.velocity.x =  50;
+      if(ran > 0.65){
+        this.body.velocity.x =  -50;
+      }else{
+        this.body.velocity.x =  50;
+      }
+      
       scene.anims.create({
         key: "walking",
         frames: scene.anims.generateFrameNumbers("goomba", {
@@ -50,39 +56,27 @@ class Goomba extends Phaser.GameObjects.Sprite {
     }
 
     update(){
-        // if(this.body.x > 710){
-        //     this.body.x = -5;
-        //   }
-        //   if(this.body.x < -10){
-        //     this.body.x = 705;
-        //   }
-        
-        //   if(this.body.x >= config.width || this.body.x <= 0){
-        //     this.body.velocity.x *= -1;
-        //   }
-          
-        //   if(this.body.velocity.x == 0){
-        //     this.body.velocity.x = 50;
-        //   }
-        
-        //   if(this.body.y >= config.height + 50){
-        //     this.destroy();
-        //   }
+      if(this.dead == false){
+          if(this.x > 710){
+              this.x = -5;
+            }
 
-        if(this.dead){
-            console.log("dead!");
-            this.scene.time.addEvent({
-                delay: 400,
-                callback: this.killSprite,
-                callbackScope: this,
-                loop: false
-              })
-            this.dead = false;
+          if(this.x < -10){
+              this.x = 705;
+            }
+            
+          
+          if(this.y >= config.height + 50){
+              this.destroy();
+          }
+      }else if(this.flipped){
+            console.log("GOOMBA FLIPPED");
+            this.play("flipped");
+      }else{
+          console.log("GOOMBA DEAD");
+          this.dead = true;
         }
 
-      }
+    }
 
-      killSprite(){
-        this.destroy();
-      }
  }

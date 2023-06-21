@@ -10,6 +10,6 @@ class Brick extends Phaser.GameObjects.Sprite {
         this.outOfBoundsKill = true;
         // this.physics.arcade.enable(this);
         this.body.immovable = true;
-        //this.body.velocity.y = 20;
+        this.body.velocity.y = 20;
     }
 } 
