@@ -19,10 +19,7 @@ class GameScene extends Phaser.Scene {
         this.player = this.add.group();
         this.player.add(this.mario);
 
-        this.goomba = new Goomba(this, 170, 400);
-        this.goomba.play('walking');
         this.enemies = this.add.group();
-        this.enemies.add(this.goomba);
 
         this.cursorKeys = this.input.keyboard.createCursorKeys();
 
@@ -45,8 +42,10 @@ class GameScene extends Phaser.Scene {
     }
 
     createGoomba(){
-        var goomba = new Goomba(this, this.randomPlacement(), 20, Math.random);
+        var goomba = new Goomba(this, this.randomPlacement(), 20, Math.random());
+        goomba.play("goomba_walking");
         this.enemies.add(goomba);
+
     }
 
     randomPlacement(){
@@ -62,39 +61,33 @@ class GameScene extends Phaser.Scene {
 
     playerCollision(player, enemies){
         if(enemies.body.touching.up){
-            console.log("Killing GOOMBA")
-            enemies.play("flat");
+            enemies.play("goomba_flat");
             enemies.dead = true;
+            this.enemy = enemies;
             player.body.velocity.y = -300;
             this.pointsUp = player.scene.add.sprite(enemies.body.x, enemies.body.y - 10, '200pts');
             self.time.delayedCall(500, self.killScore,this.pointsUp, this);
-            console.log(enemies);
-            self.time.delayedCall(500, self.killSprite, enemies, this);
+            self.time.delayedCall(500, self.killSprite,  this.enemy, this);
             enemies.body.velocity.x = 0;
-        }else{
-            // console.log(player);
+        }else{ 
             player.dead = true;
             player.body.velocity.x = 0;
             player.body.velocity.y = -350;
     
-             self.playerBrickColissions.destroy();
-             self.playerEnemeyColissions.destroy();
-            // this.player.alive = false;
+            self.playerBrickColissions.destroy();
+            self.playerEnemeyColissions.destroy();
         }
     }
 
     killScore(){
-        console.log("Killing Score");
         this.pointsUp.destroy();
     }
-    killSprite(enemies){
-        console.log(enemies);
-        console.log("killing bad guy!");
-        enemies.destroy();
+    killSprite(){
+        this.enemy.destroy();
     }
+
     brickCollision(player, brick){
         if(brick.body.touching.down){
-            console.log("BRICK COLLISION");
             var tween = brick.scene.tweens.add({
                 targets: brick,
                 y: brick.y -10,
@@ -113,18 +106,23 @@ class GameScene extends Phaser.Scene {
             });
           }
     }
+
     flip(brick, enemies){
         enemies.body.velocity.x = 0;
         enemies.body.velocity.y = -100;
         enemies.flipped = true;
-        enemies.play("flipped");
+        enemies.play("goomba_flipped");
         console.log(enemies.body.touching);
         self.enemies.remove(enemies);
     }
     
     update(){
         this.mario.update();  
-        this.goomba.update();
+
+        this.enemies.children.iterate((child) => {
+            child.update();
+          });
+
         if(this.mario.y > 700){
             this.scene.start('menuScene');
         }

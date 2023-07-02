@@ -88,14 +88,14 @@ class Mario extends Phaser.GameObjects.Sprite {
         if(this.dead == false){
             if(this.cursors.up.isDown && this.body.wasTouching.down){
                 // this.jumpSound.play();
-                this.body.velocity.y = -440;
+                this.body.velocity.y = -480;
               }
 
             if (this.cursors.left.isDown) {
-                this.x -= 3;
+                this.x -= 5;
                 this.play("walk-left", true);
             } else if (this.cursors.right.isDown) {
-                this.x += 3;
+                this.x += 5;
                 this.play("walk-right", true);
             }else{
                 if(this.facingRight == true){
