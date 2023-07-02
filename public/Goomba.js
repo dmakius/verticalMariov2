@@ -8,7 +8,7 @@ class Goomba extends Phaser.GameObjects.Sprite {
       this.body.gravity.y = 700;
       this.dead = false;
       this.flipped = false;
-      console.log(ran);
+
       if(ran > 0.65){
         this.body.velocity.x =  -50;
         this.left = true;

@@ -87,7 +87,6 @@ class Mario extends Phaser.GameObjects.Sprite {
   update(){
         if(this.dead == false){
             if(this.cursors.up.isDown && this.body.wasTouching.down){
-                // this.jumpSound.play();
                 this.body.velocity.y = -480;
               }
 

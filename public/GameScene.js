@@ -12,8 +12,10 @@ class GameScene extends Phaser.Scene {
     create(){
         this.background = this.add.sprite(0,0, 'background');
         this.background.setOrigin(0,0);
-        this.createFloor();
         
+        this.createFloor();
+        this.createCoins();
+
         this.mario = new Mario(this, 70, 400);
         this.mario.play('stand-right');
         this.player = this.add.group();
@@ -30,6 +32,12 @@ class GameScene extends Phaser.Scene {
         this.goombaTimer = this.time.addEvent({delay: 2000,callback: this.createGoomba,callbackScope: this,loop: true});
         this.rowTimer = this.time.addEvent({delay: 7000,callback: this.addRow,callbackScope: this,loop: true});     
        
+        this.score = 0;
+        this.scoreBoard = this.add.bitmapText(10, 10, "marioFont", "SCORE: 0" , 16);
+        
+        this.physics.add.overlap(this.coins, this.player, this.collectCoin, null, this);
+        this.physics.add.overlap(this.coins, this.initPlatforms, this.fixCoins, null, this);
+
     }
     addRow(){
         var gap = Math.floor(Math.random()*20);
@@ -45,8 +53,30 @@ class GameScene extends Phaser.Scene {
         var goomba = new Goomba(this, this.randomPlacement(), 20, Math.random());
         goomba.play("goomba_walking");
         this.enemies.add(goomba);
-
     }
+
+    createCoins(){
+        this.coins = this.add.group();
+        this.coins.enableBody = true;
+        for(var x = 0; x<3; x++){
+          var ranX = Math.floor(Math.random() * 650);
+          var ranY = Math.floor(Math.random()* 350);
+          var coin = new Coin(this, ranX, ranY);
+          this.coins.add(coin);
+        }
+      }
+    
+    fixCoins(coin, platform){
+        coin.y += 20;
+      }
+
+    collectCoin(coin, player){
+        coin.relocate();
+        console.log("COIN COLLECT");
+        self.score += 500;
+        self.scoreBoard.setText("SCORE: " + self.score);
+  
+      }
 
     randomPlacement(){
         var r = Math.random();
@@ -69,11 +99,13 @@ class GameScene extends Phaser.Scene {
             self.time.delayedCall(500, self.killScore,this.pointsUp, this);
             self.time.delayedCall(500, self.killSprite,  this.enemy, this);
             enemies.body.velocity.x = 0;
+            self.score += 200;
+            self.scoreBoard.setText("SCORE: " +  self.score);
         }else{ 
             player.dead = true;
             player.body.velocity.x = 0;
             player.body.velocity.y = -350;
-    
+
             self.playerBrickColissions.destroy();
             self.playerEnemeyColissions.destroy();
         }
@@ -141,8 +173,6 @@ class GameScene extends Phaser.Scene {
             }
         }
     }
-
-
 }
 
   
